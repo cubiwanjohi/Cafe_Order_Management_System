@@ -1,12 +1,18 @@
 from rest_framework import serializers
-from .models import Menu, Order
+from .models import Category, MenuItem, Order, OrderItem
 
-class MenuSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Menu
-        fields = '__all__' 
+        model = Category
+        fields = '__all__'
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
+    items = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = Order
-        fields = ['id', 'items', 'total_price', 'status', 'created_at']
+        fields = ['id', 'user', 'status', 'items', 'created_at']

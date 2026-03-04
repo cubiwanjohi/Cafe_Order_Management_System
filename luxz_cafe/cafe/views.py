@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required 
-from .models import Category, MenuItem 
+from rest_framework import generics
+from .serializers import CategorySerializer, MenuItemSerializer, OrderSerializer
+
+from .models import Category, MenuItem, Order 
 from .forms import CategoryForm 
 
 def home(request):
@@ -12,10 +15,7 @@ def home(request):
 def category_items(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     items = MenuItem.objects.filter(category=category)
-    return render(request, 'category_items.html', {
-        'category': category, 
-        'items': items
-    })
+    return render(request, 'category_items.html', {'category': category, 'items': items})
 
 @staff_member_required 
 def add_category(request):
@@ -34,9 +34,17 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}! You can now login.')
             return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': UserCreationForm()})
+
+class CategoryListAPI(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class MenuItemListAPI(generics.ListCreateAPIView):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
+
+class OrderListAPI(generics.ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
