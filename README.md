@@ -6,9 +6,30 @@ The Cafe Order Management System is a web-based application designed to streamli
 This system helps reduce manual errors, improve order accuracy, and enhance customer satisfaction.
 
 ---
+## ⚙️ Installation & Setup
 
-## 🚀 Features
+1. **Clone the repository:**
+   `git clone https://github.com/cubiwanjohi/Cafe_Order_Management_System`
+2. **Create a virtual environment:**
+   `python -m venv venv`
+3. **Activate virtual environment:**
+   - Windows: `venv\Scripts\activate`
+   - Mac/Linux: `source venv/bin/activate`
+4. **Install dependencies:**
+   `pip install django djangorestframework`
+5. **Run Migrations:**
+   `python manage.py migrate`
+6. **Start the server:**
+   `python manage.py runserver`
 
+## 📡 API Documentation
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| **GET** | `/api/categories/` | List all food categories |
+| **GET** | `/api/menu/` | View the full active menu |
+| **POST** | `/api/orders/` | Submit a new order |
+
+# Features
 - 🧾 Add and manage customer orders
 - 📋 View and update order status (Pending, Preparing, Completed)
 - 🍔 Manage menu items (Add, Edit, Delete)
@@ -29,21 +50,12 @@ This system helps reduce manual errors, improve order accuracy, and enhance cust
 ---
 
 ## 📂 Project Structure
-
 Cafe_Order_Management_System/
-│
-├── cafe/                 # Main Django app
-├── templates/            # HTML templates
-├── static/               # CSS, JS, Images
-├── db.sqlite3            # Database
-├── manage.py
-└── README.md
-
-
-
-## 🎯 Objectives of the Project
-
-- To automate cafe order processing
-- To reduce paperwork and manual tracking
-- To improve efficiency in order management
-- To provide real-time order updates
+├── / luxz_cafe            # Project settings & main URL dispatcher
+├── cafe/                 # Main App: Models, Views, Serializers
+│   ├── migrations/       # Database version history
+│   ├── serializers.py    # API Data translators
+│   └── forms.py          # Web-based input validation
+├── templates/            # HTML Frontend (home.html, register.html)
+├── media/                # Uploaded menu item images
+└── manage.py             # Django command-line utility

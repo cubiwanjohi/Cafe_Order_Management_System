@@ -4,24 +4,32 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required 
 from rest_framework import generics
 from .serializers import CategorySerializer, MenuItemSerializer, OrderSerializer
-
 from .models import Category, MenuItem, Order 
 from .forms import CategoryForm 
 
 def home(request):
-    """Fetches all food categories and displays them on the homepage."""
+    """
+    Renders the main landing page.
+    Fetches all available menu categories to be displayed in the UI.
+    """
     categories = Category.objects.all()
     return render(request, 'home.html', {'categories': categories})
 
 def category_items(request, category_id):
-    """Shows all menu items belonging to a specific category (e.g., all 'Drinks')."""
+    """
+    Filters and displays menu items based on a selected category ID.
+    Uses get_object_or_404 to ensure robust error handling if the ID is invalid.
+    """
     category = get_object_or_404(Category, id=category_id)
     items = MenuItem.objects.filter(category=category)
     return render(request, 'category_items.html', {'category': category, 'items': items})
 
 @staff_member_required 
 def add_category(request):
-    """Allows staff to add new categories."""
+    """
+    Secure view for administrative staff to create new menu categories.
+    Handles both the GET (display form) and POST (save data) logic.
+    """
     if request.method == 'POST':
         form = CategoryForm(request.POST, request.FILES) 
         if form.is_valid():
@@ -33,24 +41,39 @@ def add_category(request):
     return render(request, 'add_category.html', {'form': form})
 
 def register(request):
-    """Handles new user registration using Django's built-in auth form."""
+    """
+    Standard user registration portal using Django's built-in UserCreationForm.
+    Redirects to the login page upon successful account creation.
+    """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
+    # Re-renders the form with validation errors if the POST was invalid
     return render(request, 'registration/register.html', {'form': UserCreationForm()})
 
+# ==========================================
+# API ENDPOINTS (REST Framework)
+# ==========================================
 class CategoryListAPI(generics.ListCreateAPIView):
+    """
+    Endpoint for listing categories or creating new ones via JSON.
+    Supports GET (List) and POST (Create) methods.
+    """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 class MenuItemListAPI(generics.ListCreateAPIView):
-    """views all categories or create a new one."""
+    """
+    Endpoint for retrieving the full menu or adding new items.
+    """
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
 
 class OrderListAPI(generics.ListCreateAPIView):
-    """customer views or places orders."""
+    """
+    Endpoint for customers to view order history or submit new orders.
+    """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Category, MenuItem, Order, OrderItem
 
+"""Allows admin to edit OrderItems directly inside the Order page."""
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 1
